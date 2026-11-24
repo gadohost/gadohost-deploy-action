@@ -1,0 +1,20 @@
+name: Deploy to GadoHost Cloud
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger GadoHost Deploy Webhook
+        run: |
+          if [ -z "${{ secrets.GADOHOST_WEBHOOK_URL }}" ]; then
+            echo "Error: GADOHOST_WEBHOOK_URL secret is not configured."
+            exit 1
+          fi
+          curl --fail --silent --show-error -X POST "${{ secrets.GADOHOST_WEBHOOK_URL }}"
+          echo "GadoHost deployment triggered successfully."
