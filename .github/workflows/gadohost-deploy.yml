@@ -11,10 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger GadoHost Deploy Webhook
+        env:
+          GADOHOST_WEBHOOK_URL: ${{ secrets.GADOHOST_WEBHOOK_URL }}
         run: |
-          if [ -z "${{ secrets.GADOHOST_WEBHOOK_URL }}" ]; then
-            echo "Error: GADOHOST_WEBHOOK_URL secret is not configured."
-            exit 1
+          if [ -z "$GADOHOST_WEBHOOK_URL" ]; then
+            echo "Template workflow check passed. Add the GADOHOST_WEBHOOK_URL secret in your application repository to enable auto-deploy."
+            exit 0
           fi
-          curl --fail --silent --show-error -X POST "${{ secrets.GADOHOST_WEBHOOK_URL }}"
+          curl --fail --silent --show-error -X POST "$GADOHOST_WEBHOOK_URL"
           echo "GadoHost deployment triggered successfully."
